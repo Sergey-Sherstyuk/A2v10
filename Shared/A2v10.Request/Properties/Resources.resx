@@ -142,7 +142,14 @@
   <data name="confirmCodeScript" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Pages\confirmCodeScript.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="confirmEMail" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="confirm2FACode" type="System.Resources.ResXFileRef, System.Windows.Forms">
+	  <value>..\Pages\confirm2FACode.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="confirm2FACodeScript" type="System.Resources.ResXFileRef, System.Windows.Forms">
+	  <value>..\Pages\confirm2FACodeScript.js;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+
+	<data name="confirmEMail" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Pages\confirmEMail.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="error" type="System.Resources.ResXFileRef, System.Windows.Forms">

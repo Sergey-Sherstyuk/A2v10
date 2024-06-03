@@ -79,7 +79,10 @@ public static partial class Startup
                 */
             });
 
-		static String GetApplicationCookieName()
+        app.UseTwoFactorSignInCookie(DefaultAuthenticationTypes.TwoFactorCookie, TimeSpan.FromMinutes(5));
+        //app.UseTwoFactorRememberBrowserCookie(DefaultAuthenticationTypes.TwoFactorRememberBrowserCookie);
+
+        static String GetApplicationCookieName()
 		{
 			var key = ConfigurationManager.AppSettings["AppKey"];
 			return $"{key}.ASP.NET.ApplicationCookie";

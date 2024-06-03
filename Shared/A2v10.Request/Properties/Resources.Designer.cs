@@ -242,6 +242,63 @@ namespace A2v10.Request.Properties {
         ///			&lt;div class=&quot;control-group bold&quot; style=&quot;width:15rem;margin:0 auto;&quot;&gt;
         ///				&lt;label class=&quot;a2-label required&quot; v [rest of string was truncated]&quot;;.
         /// </summary>
+        public static string confirm2FACode {
+            get {
+                return ResourceManager.GetString("confirm2FACode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Copyright © 2015-2021 Alex Kukhtin. All rights reserved.
+        ///
+        ///// 20210619-7785
+        ///
+        ///&quot;use strict&quot;;
+        ///
+        ///(function () {
+        ///
+        ///
+        ///	const token = &apos;$(Token)&apos;;
+        ///
+        ///	$(Utils)
+        ///	$(Locale)
+        ///
+        ///	// TODO: from LOCALE or WEB.CONFIG
+        ///	const currentMask = &apos;+38 (0##) ###-##-##&apos;;
+        ///
+        ///	const vm = new Vue({
+        ///		el: &quot;#app&quot;,
+        ///		data: {
+        ///			email: &apos;$(UserEmail)&apos;,
+        ///			userLocale: window.$$locale.$Locale, /*current locale here */
+        ///			processing: false,
+        ///			info: $(PageData),
+        ///			appLinks: $(AppLinks),
+        ///			appData: $(AppData),
+        ///			submitted: [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string confirm2FACodeScript {
+            get {
+                return ResourceManager.GetString("confirm2FACodeScript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 
+        ///&lt;div class=&quot;center-page&quot;&gt;
+        ///	&lt;div class=&quot;initial-form&quot;&gt;
+        ///		&lt;h3 class=&quot;a2-header text-center&quot; v-text=&quot;locale.$RegisterPrompt&quot;&gt;&lt;/h3&gt;
+        ///		&lt;hr style=&quot;margin-top:1rem&quot; /&gt;
+        ///		&lt;div v-if=&quot;serverError&quot; class=&quot;validation-summary&quot; style=&quot;margin-top:10px;white-space:normal&quot;&gt;
+        ///			&lt;span class=&quot;error&quot; v-text=&quot;serverError&quot;&gt;&lt;/span&gt;
+        ///		&lt;/div&gt;
+        ///		&lt;div class=&quot;user-select&quot;&gt;
+        ///
+        ///			&lt;p v-text=&quot;confirmRegisterText&quot;&gt;&lt;/p&gt;
+        ///
+        ///			&lt;div class=&quot;control-group bold&quot; style=&quot;width:15rem;margin:0 auto;&quot;&gt;
+        ///				&lt;label class=&quot;a2-label required&quot; v [rest of string was truncated]&quot;;.
+        /// </summary>
         public static string confirmCode {
             get {
                 return ResourceManager.GetString("confirmCode", resourceCulture);
@@ -381,7 +438,7 @@ namespace A2v10.Request.Properties {
         ///	&lt;link href=&quot;/css/$(Theme).min.css?v=$(ThemeTimeStamp)&quot; rel=&quot;stylesheet&quot; /&gt;
         ///&lt;/head&gt;
         ///&lt;body&gt;
-        ///	&lt;script type=&quot;text/javascript&quot; src=&quot;/scripts/vue.js?v=2.5.13&quot;&gt;&lt;/script&gt;
+        ///	&lt;script type=&quot;text/javascript&quot; src=&quot;/scripts/vue.js?v=2.7.16&quot;&gt;&lt;/script&gt;
         ///	&lt;s [rest of string was truncated]&quot;;.
         /// </summary>
         public static string euSignFrame {
