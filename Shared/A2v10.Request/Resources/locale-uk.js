@@ -66,6 +66,8 @@
 		$SendCodeAgain:'Відправити код ще раз',
 		$ErrorAntiForgery: 'Запит вже виконано в іншому вікні браузера. Сторінку буде перезавантажено',
 		$IHaveCode: 'В мене є код підтвердження',
+		$TwoFactorPrompt: 'Двохфакторна автентифікація',
+		$ConfirmTwoFactorText: 'Код підтвердження було відправлено на email',
 		$AvailableLocales: {
 			"uk-UA": 'Українська',
 			"en-US": 'Англійська (English)',

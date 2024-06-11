@@ -15,7 +15,6 @@
 	const vm = new Vue({
 		el: "#app",
 		data: {
-			email: '$(UserEmail)',
 			userLocale: window.$$locale.$Locale, /*current locale here */
 			processing: false,
 			info: $(PageData),
@@ -25,8 +24,9 @@
 			serverError: '',
 			passwordError: '',
 			confirmCode: '',
-			loginVisible: false,
-			againVisible: true
+			loginVisible: true,
+			againVisible: true,
+			loginVisible: true
 		},
 		computed: {
 			hasLogo() {
@@ -38,14 +38,11 @@
 			locale: function() {
 				return window.$$locale;
 			},
-			confirmRegisterText() {
-				return this.locale.$ConfirmRegister.replace('{0}', this.email);
-			},
 			valid: function() {
 				if (!this.submitted) return true;
 				return !!this.confirmCode;
 			},
-			confirmEmailDisabled() {
+			confirmCodeDisabled() {
 				return !this.confirmCode;
 			}
 		},
@@ -58,20 +55,14 @@
 				const that = this;
 				post('/account/confirm2facode', dataToSend)
 					.then(function (response) {
-						//console.dir(response);
 						that.processing = false;
 						let result = response.Status;
 						switch (result) {
 							case 'Success':
 								that.navigate();
 								break;
-							//case 'EMailAlreadyConfirmed':
-							//	that.setError('$EMailAlreadyConfirmed');
-							//	that.loginVisible = true;
-							//	that.againVisible = false;
-							//	break;
 							case 'Lockout':
-								that.setError('$Lockout');
+								that.setError('$UserLockuotError');
 								break;	
 							case 'InvalidConfirmCode':
 								that.setError('$InvalidConfirmCode');
@@ -79,9 +70,6 @@
 							case 'LoggedIn':
 								that.navigate();
 								break;
-							//case 'DelayedConfirm':
-							//	window.location.assign('/account/confirmemailsuccess');
-							//	break;
 							case 'AntiForgery':
 								alert(that.locale.$ErrorAntiForgery);
 								that.reload();
@@ -95,10 +83,9 @@
 						alert(error);
 					});
 			},
-			sendCodeAgain() {
+			sendCode() {
 				this.processing = true;
 				let dataToSend = {
-					Email: this.email
 				};
 				const that = this;
 				post('/account/send2facode', dataToSend)
@@ -114,7 +101,7 @@
 					})
 					.catch(function (error) {
 						that.processing = false;
-						alert(error);
+						alert(`${that.locale.$ErrorText}: ${error}`);
 					});
 			},
 			navigate: function() {
@@ -143,6 +130,7 @@
 		},
 		mounted: function() {
 			document.addEventListener('keypress', this.__keyUp);
+			this.sendCode();
 		}
 	});
 })();

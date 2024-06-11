@@ -66,6 +66,8 @@
 		$SendCodeAgain: 'Enviar código de nuevo',
 		$ErrorAntiForgery: 'La solicitud ya se ha ejecutado en otra ventana del navegador. Se volverá a cargar la página',
 		$IHaveCode: 'Tengo un código de confirmación',
+		$TwoFactorPrompt: 'Two-factor authentication',
+		$ConfirmTwoFactorText: 'The confirmation code was sent to your email',
 		$AvailableLocales: {
 			"es-ES": "Español",
 			"uk-UA": 'Ucraniano (Українська)',

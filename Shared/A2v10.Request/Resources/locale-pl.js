@@ -64,6 +64,8 @@
 		$SendCodeAgain: 'Wyślij kod ponownie',
 		$ErrorAntiForgery: 'Żądanie zostało już złożone w innym oknie przeglądarki. Strona zostanie ponownie załadowana',
 		$IHaveCode: 'Mam kod weryfikacyjny',
+		$TwoFactorPrompt: 'Two-factor authentication',
+		$ConfirmTwoFactorText: 'The confirmation code was sent to your email',
 		$AvailableLocales: {
 			"pl-PL": 'Polski',
 			"ru-RU": 'Rosyjski (Русский)',

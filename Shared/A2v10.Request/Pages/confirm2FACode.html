@@ -1,14 +1,14 @@
 ﻿
 <div class="center-page">
 	<div class="initial-form">
-		<h3 class="a2-header text-center" v-text="locale.$RegisterPrompt"></h3>
+		<h3 class="a2-header text-center" v-text="locale.$TwoFactorPrompt"></h3>
 		<hr style="margin-top:1rem" />
 		<div v-if="serverError" class="validation-summary" style="margin-top:10px;white-space:normal">
 			<span class="error" v-text="serverError"></span>
 		</div>
 		<div class="user-select">
 
-			<p v-text="confirmRegisterText"></p>
+			<p v-text="locale.$ConfirmTwoFactorText"></p>
 
 			<div class="control-group bold" style="width:15rem;margin:0 auto;">
 				<label class="a2-label required" v-text="locale.$ConfirmCode"></label>
@@ -17,8 +17,8 @@
 				</div>
 			</div>
 
-			<button @click.stop.prevent="submitConfirm" class="btn btn-default" v-text="locale.$Continue" :disabled="confirmEmailDisabled"></button>
-			<a v-if="againVisible" tabindex="2" href="" @click.stop.prevent="sendCodeAgain" class="a2-hyperlink" v-text="locale.$SendCodeAgain"></a>
+			<button @click.stop.prevent="submitConfirm" class="btn btn-default" v-text="locale.$Continue" :disabled="confirmCodeDisabled"></button>
+			<a v-if="againVisible" tabindex="2" href="" @click.stop.prevent="sendCode" class="a2-hyperlink" v-text="locale.$SendCodeAgain"></a>
 			<a v-if="loginVisible" tabindex="3" :href="getReferUrl('/')" class="a2-hyperlink" v-text="locale.$LoginLink"></a>
 		</div>
 	</div>
