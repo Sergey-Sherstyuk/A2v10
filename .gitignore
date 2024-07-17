@@ -291,3 +291,6 @@ __pycache__/
 /Desktop/Lib
 /Web/A2v10.Web.Site/lib/vue2-7-16
 /Web/A2v10.Web.Site/lib/vuex3-6-2
+
+# Samples
+/A2v10.Web.Runtime/App_application/Samples
