@@ -257,10 +257,12 @@ public class AccountController : IdentityController, IControllerTenant, IControl
 			model.Name = model.Name.ToLower();
 			var user = await UserManager.FindByNameAsync(model.Name);
 
-			// Find by Phone Number
-			// await UserManager.FindAsync(new UserLoginInfo("PhoneNumber", model.Name));
+            //user.TwoFactorEnabled
 
-			if (user == null)
+            // Find by Phone Number
+            // await UserManager.FindAsync(new UserLoginInfo("PhoneNumber", model.Name));
+
+            if (user == null)
 				return Json(new { Status = "Failure" });
 
 			if (!user.EmailConfirmed)
@@ -307,7 +309,37 @@ public class AccountController : IdentityController, IControllerTenant, IControl
 					status = "LockedOut";
 					break;
 				case SignInStatus.RequiresVerification:
-					throw new NotImplementedException("SignInStatus.RequiresVerification");
+                    status = "TwoFactor";
+                    break;
+
+                    // var userId = await SignInManager.GetVerifiedUserIdAsync();
+                    // if (userId == 0)
+                    //{
+                        //return View(new SendCodeViewModel { ReturnUrl = "~/account/register", RememberMe = model.RememberMe });
+                        //return RedirectToAction("SendTwoFactorCode", "Account",new SendCodeViewModel { ReturnUrl = "~/account/register", RememberMe = model.RememberMe });
+
+                        // return RedirectToAction("redirectSendTwoFactorCodeAsync", "Account",
+                        //     new 
+                        //     {
+                        //         ReturnUrl = "~/account/register",
+                        //         //Email = model.Name,
+                        //         //Password = model.Password,
+                        //         RememberMe = model.RememberMe
+                        //     });
+                    //}
+					
+
+                    // if (!await SignInManager.SendTwoFactorCodeAsync(AppUserManager.TWOFACTORPROVIDERS.EMailCode))
+                    // {
+                    //     status = "Failure";
+                    //     break;
+                    // }
+                    //
+                    
+                    // Response.Redirect("/account/login");
+                    //break;
+                    // await SignInManager.SendTwoFactorCodeAsync("Email");  !!!!!!
+                    //throw new NotImplementedException("SignInStatus.RequiresVerification !!! SERG !!!");
 				case SignInStatus.Failure:
 				default:
 					await UpdateUser(model.Name);
@@ -324,8 +356,64 @@ public class AccountController : IdentityController, IControllerTenant, IControl
 		return Json(new { Status = status });
 	}
 
+    // [AllowAnonymous]
+    // public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
+    // {
+    //     var userId = await SignInManager.GetVerifiedUserIdAsync();
+    //     if (userId == null)
+    //     {
+    //         return View("Error");
+    //     }
+    //     var userFactors = await UserManager.GetValidTwoFactorProvidersAsync(userId);
+    //     var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList();
+    //     return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
+    // }
 
-	void ClearAllCookies()
+    //
+ //    // POST: /Account/SendCode
+ //    //[HttpPost]
+ //    [HttpGet]
+	// //[Route("account/sendcode")]
+ //    [AllowAnonymous]
+ //    [ValidateAntiForgeryToken]
+ //    public async Task<ActionResult> SendTwoFactorCode(SendCodeViewModel model)
+ //    {
+ //        if (!ModelState.IsValid)
+ //        {
+ //            return Json(new { Status = "Failure" });
+ //        }
+ //
+ //        // Generate the token and send it
+ //        if (!await SignInManager.SendTwoFactorCodeAsync(AppUserManager.TWOFACTORPROVIDERS.EMailCode))
+ //        {
+ //            return Json(new { Status = "Failure SendTwoFactorCode" });
+ //        }
+ //        return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
+ //    }
+
+   
+
+
+    //[HttpGet]
+    //[AllowAnonymous]
+    //public async Task<ActionResult> redirectSendTwoFactorCodeAsync(string ReturnUrl, /*string name, string Password,*/ bool RememberMe)
+    //{
+    //    if (!await SignInManager.SendTwoFactorCodeAsync(AppUserManager.TWOFACTORPROVIDERS.EMailCode))
+    //    {
+    //        ModelState.AddModelError("", "Failure sending Email verification token");
+    //        return View("Login", new LoginViewModel()
+    //        {
+    //            Name = name,
+    //            Password = Password,
+    //            RememberMe = RememberMe
+    //        });
+    //    }
+    //    return View("VerifyCode", new VerifyCodeViewModel { ReturnUrl = ReturnUrl, RememberMe = RememberMe });
+    //}
+
+
+
+    void ClearAllCookies()
 	{
 		var expires = DateTime.Now.AddDays(-1d);
 		foreach (var key in Request.Cookies.AllKeys)
@@ -815,7 +903,89 @@ public class AccountController : IdentityController, IControllerTenant, IControl
 		}
 	}
 
-	[AllowAnonymous]
+    
+
+    [AllowAnonymous]
+    [HttpGet]
+	[Route("twofactor")]
+    [OutputCache(Duration = 0)]
+    public void Twofactor()
+    {
+        SendPage(GetRedirectedPage("confirm2FACode", ResourceHelper.Confirm2FACodeHtml), ResourceHelper.Confirm2FACodeScript);
+    }
+
+    [AllowAnonymous]
+    [HttpPost]
+    [Route("send2facode")]
+    [OutputCache(Duration = 0)]
+    public async Task<ActionResult> send2facode()
+    {
+        try
+        {
+            if (!await SignInManager.SendTwoFactorCodeAsync(AppUserManager.TWOFACTORPROVIDERS.EMailCode))
+            {
+                return Json(new { Status = "Failure SendTwoFactorCode" });
+            }
+            return Json(new { Status = "Success" });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
+    }
+
+
+    // POST: /Account/ConfirmEmail
+    [OutputCache(Duration = 0)]
+    [ActionName("confirm2facode")]
+    [HttpPost]
+    [IsAjaxOnly]
+    [AllowAnonymous]
+    [ValidateJsonAntiForgeryToken]
+    [HandlAntiForgeryExecptionAttribute]
+    public async Task<ActionResult> Confirm2FACodePost()
+    {
+        String status;
+        try
+        {
+            VerifyCodeViewModel model = GetModelFromBody<VerifyCodeViewModel>();
+
+            if (model.Code == null)
+                throw new SecurityException("Invalid code");
+
+
+            // The following code protects for brute force attacks against the two factor codes. 
+            // If a user enters incorrect codes for a specified amount of time then the user account 
+            // will be locked out for a specified amount of time. 
+            // You can configure the account lockout settings in IdentityConfig
+            var result = await SignInManager.TwoFactorSignInAsync(AppUserManager.TWOFACTORPROVIDERS.EMailCode, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
+            switch (result)
+            {
+                case SignInStatus.Success:
+                    status = "Success";
+					break;
+                case SignInStatus.LockedOut:
+                    status = "Lockout";
+					break;
+                case SignInStatus.Failure:
+                default:
+					status = "InvalidConfirmCode";
+                    break;
+            }
+
+			return Json(new { Status = status });
+        }
+        catch (Exception ex)
+        {
+            // TODO: log error here!
+            status = ex.Message;
+        }
+        return Json(new { Status = status });
+    }
+
+    [AllowAnonymous]
 	[HttpGet]
 	[OutputCache(Duration = 0)]
 	public void ForgotPassword()

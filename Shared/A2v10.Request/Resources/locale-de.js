@@ -65,6 +65,8 @@
 		$LocaleLabel: 'Schnittstellensprache',
 		$SendCodeAgain: 'Code erneut senden',
 		$IHaveCode: 'Ich habe einen Bestätigungscode',
+		$TwoFactorPrompt: 'Two-factor authentication',
+		$ConfirmTwoFactorText: 'The confirmation code was sent to your email',		
 		$AvailableLocales: {
 			"de-DE": 'Deutsche',
 			"uk-UA": 'Ukrainisch (Українська)',

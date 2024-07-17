@@ -28,7 +28,10 @@ public static class ResourceHelper
 	public static String ConfirmCodeHtml => Resources.confirmCode;
 	public static String ConfirmCodeScript => Resources.confirmCodeScript;
 
-	public static String StiReportHtml => Resources.stiReport;
+    public static String Confirm2FACodeHtml => Resources.confirm2FACode;
+    public static String Confirm2FACodeScript => Resources.confirm2FACodeScript;
+
+    public static String StiReportHtml => Resources.stiReport;
 
 	public static String PageUtils => Resources.pageUtils;
 	public static String Mask => Resources.mask;

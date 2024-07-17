@@ -66,6 +66,8 @@
 		$SendCodeAgain: 'Send code again',
 		$ErrorAntiForgery: 'The request has already been executed in another browser window.The page will reload',
 		$IHaveCode:'I have a verification code',
+		$TwoFactorPrompt: 'Two-factor authentication',
+		$ConfirmTwoFactorText: 'The confirmation code was sent to your email',
 		$AvailableLocales: {
 			"en-US": 'English',
 			"uk-UA": 'Ukrainian (Українська)',

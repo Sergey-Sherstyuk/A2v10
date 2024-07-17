@@ -17,7 +17,7 @@ namespace A2v10.Web.Mvc.Models
 
 	public class VerifyCodeViewModel
 	{
-		[Required]
+		// [Required]
 		public String Provider { get; set; }
 
 		[Required]
@@ -71,7 +71,12 @@ namespace A2v10.Web.Mvc.Models
 		public String Code { get; set; }
 	}
 
-	public class UserReferralInfo
+    public class ConfirmCodeModel
+    {
+        public String Code { get; set; }
+    }
+
+    public class UserReferralInfo
 	{
 		public Int64 UserId { get; set; }
 		public String Referral { get; set; }
