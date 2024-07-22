@@ -207,7 +207,7 @@ app.modules['std:const'] = function () {
 
 // Copyright © 2015-2024 Oleksandr Kukhtin. All rights reserved.
 
-// 20240325-7964
+// 20240616-7965
 // services/utils.js
 
 app.modules['std:utils'] = function () {
@@ -221,9 +221,11 @@ app.modules['std:utils'] = function () {
 
 	const dateOptsDate = { year: 'numeric', month: _2digit, day: _2digit };
 	const dateOptsTime = { hour: _2digit, minute: _2digit };
+	const dateOptsTime2 = { hour: _2digit, minute: _2digit, second: _2digit };
 	
 	const formatDate = new Intl.DateTimeFormat(dateLocale, dateOptsDate).format;
 	const formatTime = new Intl.DateTimeFormat(dateLocale, dateOptsTime).format;
+	const formatTime2 = new Intl.DateTimeFormat(dateLocale, dateOptsTime2).format;
 
 	const currencyFormat = new Intl.NumberFormat(numLocale, { minimumFractionDigits: 2, maximumFractionDigits: 6, useGrouping: true }).format;
 	const nf = new Intl.NumberFormat(numLocale, { minimumFractionDigits: 0, maximumFractionDigits: 6, useGrouping: true });
@@ -467,7 +469,7 @@ app.modules['std:utils'] = function () {
 		let r = simpleEval(obj, path);
 		if (skipFormat) return r;
 		if (isDate(r))
-			return format(r, dataType);
+			return format(r, dataType, opts);
 		else if (isObject(r))
 			return toJson(r);
 		else
@@ -532,6 +534,8 @@ app.modules['std:utils'] = function () {
 		if (!format)
 			return formatDate(date);
 		switch (format) {
+			case 'dd.MM.yyyy HH:mm:ss':
+				return `${formatDate(date)}  ${formatTime2(date)}`;
 			case 'MMMM yyyy':
 				return capitalize(date.toLocaleDateString(locale.$Locale, { month: 'long', year: 'numeric' }));
 			default:
@@ -558,6 +562,7 @@ app.modules['std:utils'] = function () {
 			return '';
 		switch (dataType) {
 			case "DateTime":
+			case "DateTime2":
 				if (!obj) return '';
 				if (!isDate(obj)) {
 					console.error(`Invalid Date for utils.format (${obj})`);
@@ -567,7 +572,8 @@ app.modules['std:utils'] = function () {
 					return '';
 				if (opts.format)
 					return formatDateWithFormat(obj, opts.format);
-				return formatDate(obj) + ' ' + formatTime(obj);
+				let fnTime = dataType === "DateTime2" ? formatTime2 : formatTime;
+				return `${formatDate(obj)} ${fnTime(obj)}`;
 			case "Date":
 				if (!obj) return '';
 				if (isString(obj))
@@ -1786,7 +1792,7 @@ app.modules['std:modelInfo'] = function () {
 
 // Copyright © 2015-2024 Oleksandr Kukhtin. All rights reserved.
 
-// 20240120-7958
+// 20240705-7969
 /* services/http.js */
 
 app.modules['std:http'] = function () {
@@ -1812,6 +1818,7 @@ app.modules['std:http'] = function () {
 		if (!skipEvents)
 			eventBus.$emit('beginRequest', url);
 		let appver = '';
+		let modulever = '';
 		try {
 			var response = await fetch(url, {
 				method,
@@ -1824,6 +1831,7 @@ app.modules['std:http'] = function () {
 			});
 			let ct = response.headers.get("content-type") || '';
 			appver = response.headers.get("app-version") || '';
+			modulever = response.headers.get("module-version") || '';
 			switch (response.status) {
 				case 200:
 					if (raw)
@@ -1862,8 +1870,8 @@ app.modules['std:http'] = function () {
 		finally {
 			if (!skipEvents) {
 				eventBus.$emit('endRequest', url);
-				if (appver)
-					eventBus.$emit('checkVersion', appver);
+				if (appver || modulever)
+					eventBus.$emit('checkVersion', { app: appver, module: modulever });
 			}
 		}
 	}
@@ -11011,12 +11019,12 @@ TODO:
 })();
 // Copyright © 2015-2022 Alex Kukhtin. All rights reserved.
 
-// 20200111-7850
+// 20200111-7969
 // components/taskpad.js
 
 Vue.component("a2-taskpad", {
 	template:
-		`<div :class="cssClass">
+`<div :class="cssClass" :style="{width:width}">
 	<a class="ico taskpad-collapse-handle" @click.stop="toggle"></a>
 	<div v-if="expanded" class="taskpad-body">
 		<slot>
@@ -11030,20 +11038,22 @@ Vue.component("a2-taskpad", {
 	props: {
 		title: String,
 		initialCollapsed: Boolean,
-		position: String
+		position: String,
+		initialWidth: { type: String, default: '20rem' }
 	},
 	data() {
 		return {
-			expanded: true,
-			__savedCols: ''
+			expanded: true
 		};
 	},
 	computed: {
+		width() {
+			return this.expanded ? this.initialWidth : undefined;
+		},
 		cssClass() {
 			let cls = "taskpad";
 			cls += ' position-' + this.position;
 			if (this.expanded) cls += ' expanded'; else cls += ' collapsed';
-
 			return cls;
 		},
 		tasksText() {
@@ -11053,24 +11063,12 @@ Vue.component("a2-taskpad", {
 	methods: {
 		setExpanded(exp) {
 			this.expanded = exp;
-			// HACK
-			let topStyle = this.$el.parentElement.style;
-			if (this.expanded)
-				topStyle.gridTemplateColumns = this.__savedCols;
-			else {
-				if (this.position === 'left')
-					topStyle.gridTemplateColumns = "36px 1fr"; // TODO: ???
-				else
-					topStyle.gridTemplateColumns = "1fr 36px"; // TODO: ???
-			}
 		},
 		toggle() {
 			this.setExpanded(!this.expanded);
 		}
 	},
 	mounted() {
-		let topStyle = this.$el.parentElement.style;
-		this.__savedCols = topStyle.gridTemplateColumns;
 		if (this.initialCollapsed)
 			this.setExpanded(false);
 	}
@@ -13441,7 +13439,7 @@ Vue.directive('resize', {
 
 // Copyright © 2015-2024 Oleksandr Kukhtin. All rights reserved.
 
-/*20240528-7968*/
+/*20240625-7969*/
 // controllers/base.js
 
 (function () {
@@ -13818,6 +13816,10 @@ Vue.directive('resize', {
 			$showSidePane(url, arg, data) {
 				let newurl = urltools.combine('_navpane', url, arg || '0') + urltools.makeQueryString(data);
 				eventBus.$emit('showSidePane', newurl);
+			},
+
+			$hideSidePane() {
+				eventBus.$emit('hideSidePane', null);
 			},
 
 			$invoke(cmd, data, base, opts) {
@@ -14919,7 +14921,8 @@ Vue.directive('resize', {
 					$emitGlobal: this.$emitGlobal,
 					$emitParentTab: this.$emitParentTab,
 					$nodirty: this.$nodirty,
-					$showSidePane: this.$showSidePane
+					$showSidePane: this.$showSidePane,
+					$hideSidePane: this.$hideSidePane
 				};
 				Object.defineProperty(ctrl, "$isDirty", {
 					enumerable: true,
