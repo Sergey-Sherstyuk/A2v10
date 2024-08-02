@@ -5,8 +5,10 @@
 
 (function () {
 
-
 	const token = '$(Token)';
+
+	const PWD_SCORE_STRONG = 60;
+	const PWD_SCORE_GOOD = 40;
 
 	$(Utils)
 	$(Locale)
@@ -38,15 +40,15 @@
 			logoSrc() {
 				return this.appData.appLogo;
 			},
-			valid:function() {
+			valid: function () {
 				if (!this.submitted) return true;
 				return this.validEmail;
 			},
-			validEmail: function() {
+			validEmail: function () {
 				if (!this.submitted) return true;
 				return this.validEmailInline;
 			},
-			validEmailInline: function() {
+			validEmailInline: function () {
 				if (!this.email) {
 					this.emailError = this.locale.$EnterEMail;
 					return false;
@@ -67,6 +69,10 @@
 					this.passwordError = this.locale.$PasswordLength;
 					return false;
 				}
+				else if (this.password > 0 && this.pwdScore < PWD_SCORE_STRONG) {
+					this.passwordError = 'Пароль занадто простий';
+					return false;
+				}
 				this.passwordError = '';
 				return true;
 			},
@@ -84,7 +90,32 @@
 			},
 			emailVisible() { return this.mode === ''; },
 			codeVisible() { return this.mode === 'code'; },
-			passwordVisible() { return this.mode === 'password';}
+			passwordVisible() { return this.mode === 'password'; },
+
+			pwdScore() {
+				return this.calculatePwdScore(this.password);
+			},
+			pwdIcon() {
+				if (!this.password)
+					return '';
+				else if (this.pwdScore >= PWD_SCORE_STRONG)
+					return 'success-green';
+				else if (this.pwdScore >= PWD_SCORE_GOOD)
+					return 'warning-yellow';
+				else
+					return 'alert';
+			},
+			pwdLabelContent() {
+				if (!this.password)
+					return '';
+				else if (this.pwdScore >= PWD_SCORE_STRONG)
+					return 'Надійний';
+				else if (this.pwdScore >= PWD_SCORE_GOOD)
+					return 'Треба трохи складніше';
+				else
+					return 'Занадто простий';
+			}
+
 		},
 		methods: {
 			submitCode() {
@@ -124,6 +155,10 @@
 				this.submitted = true;
 				this.serverError = '';
 				if (!this.valid)
+					return;
+				if (!this.validPassword)
+					return;
+				if (!this.validConfirm)
 					return;
 				this.processing = true;
 				let dataToSend = {
@@ -189,6 +224,53 @@
 			},
 			getReferUrl: function(url) {
 				return getReferralUrl(url);
+			},
+
+			calculatePwdScore(pwd) {
+				pwd = pwd.replace('spivdiia.com', '');
+				pwd = pwd.replace('spivdiia', '');
+
+				var score = 0;
+				if (!pwd) {
+					return score;
+				}
+				// award every unique letter until 5 repetitions
+				var letters = new Object();
+				for (var i = 0; i < pwd.length; i++) {
+					letters[pwd[i]] = (letters[pwd[i]] || 0) + 1;
+					score += 5.0 / letters[pwd[i]];
+				}
+
+				// bonus points for mixing it up
+				var variations = {
+					digits: /\d/.test(pwd),
+					lower: /[a-z]/.test(pwd),
+					upper: /[A-Z]/.test(pwd),
+					nonWords: /\W/.test(pwd),
+				}
+
+				var variationCount = 0;
+				for (var check in variations) {
+					variationCount += (variations[check] == true) ? 1 : 0;
+				}
+				score += (variationCount - 1) * 10;
+
+				// Якщо варіацій (груп) символів меньше 2 - score не більше PWD_SCORE_GOOD
+				if (variationCount < 2)
+					score = Math.min(score, PWD_SCORE_GOOD);
+
+				return score;
+			},
+			showPasswordHelp() {
+				//console.log(this);
+				//const vm = this;
+				//let title = `Вимоги до паролів`;
+				let text = `Вимоги до паролів:
+ - пароль повинен містити щонайменше 6 символів, але може знадобитися більше
+ - у ньому мають бути як літери, так і цифри
+ - бажано використовувати і маленькі і заглавні літери
+ - бажано використовувати спецсимволи`;
+				alert(text);
 			}
 		}
 	});
