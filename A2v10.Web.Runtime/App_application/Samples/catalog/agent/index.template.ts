@@ -57,7 +57,8 @@ const template: Template = {
 			exec: editItem,
 			canExec(this: TRoot, arr: TAgents): boolean { return !!arr && !!arr.$selected; }
 		},
-		gotoFolder
+		gotoFolder,
+		testMsg
 	}
 };
 
@@ -303,4 +304,9 @@ async function gotoFolder(this: TRoot, agent: TAgent): Promise<any> {
 		await ch.$reload();
 		findAgent(ch);
 	}
+}
+
+async function testMsg() {
+	let ctrl = this.$ctrl;
+	await ctrl.$msg('Message', 'Title');
 }

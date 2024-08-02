@@ -44,7 +44,8 @@ define(["require", "exports"], function (require, exports) {
                 exec: editItem,
                 canExec(arr) { return !!arr && !!arr.$selected; }
             },
-            gotoFolder
+            gotoFolder,
+            testMsg
         }
     };
     exports.default = template;
@@ -225,5 +226,9 @@ define(["require", "exports"], function (require, exports) {
             await ch.$reload();
             findAgent(ch);
         }
+    }
+    async function testMsg() {
+        let ctrl = this.$ctrl;
+        await ctrl.$msg('Message', 'Title');
     }
 });

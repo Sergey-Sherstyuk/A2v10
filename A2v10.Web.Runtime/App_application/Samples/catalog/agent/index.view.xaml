@@ -25,7 +25,7 @@
 						Command="{BindCmd Dialog, Action=EditSelected, Argument={Bind Folders}, Url={StaticResource EditFolderUrl}}" />
 			<Button Icon="Delete" Command="{BindCmd Execute, 
 				CommandName=deleteFolder, Argument={Bind Folders.$selected}}"/>
-			<Separator />
+            <Separator />
 			<Button Icon="Reload" Command="{BindCmd Reload}"/>
 		</Toolbar>
 		<TreeView Grid.Row="2" Grid.Col="1" Grid.VAlign="Stretch"
@@ -69,7 +69,10 @@
 							Command="{BindCmd Reload, Argument={Bind Folders.Selected(Children)}}" Tip="Оновити"/>
 					<Separator />
 					<CheckBox Label="Показувати архівні"/>
-				</Toolbar>
+                    <Separator />
+                    <Button Icon="TaskComplete" Command="{BindCmd Execute, 
+						CommandName=testMsg, Argument={Bind}}"/>
+                </Toolbar>
 				<DataGrid Grid.Row="2" ItemsSource="{Bind Parent.ItemsSource}" Style="Light"
 							Sort="True" FixedHeader="True" GridLines="Horizontal"
 							DoubleClick="{BindCmd Dialog, Action=EditSelected, Url={StaticResource EditItemUrl}, Argument={Bind Folders.Selected(Children)}}">
