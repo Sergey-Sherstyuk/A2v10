@@ -201,8 +201,17 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>echo *****************************
+echo Copying custom bins
+rem xcopy $(ProjectDir)bin-custom\7969 $(TargetDir) /y
+copy $(SolutionDir)\A2v10.Web.Runtime\bin\A2v10.Web.Runtime.dll $(SolutionDir)\bin-custom /Y
+copy $(SolutionDir)\A2v10.Web.Runtime\bin\A2v10.Web.Runtime.pdb $(SolutionDir)\bin-custom /Y
+copy $(SolutionDir)\A2v10.Web.Runtime\bin\A2v10.Web.Mvc.dll $(SolutionDir)\bin-custom /Y
+copy $(SolutionDir)\A2v10.Web.Runtime\bin\A2v10.Web.Mvc.pdb $(SolutionDir)\bin-custom /Y
+copy $(SolutionDir)\Shared\A2v10.Request\bin\Release\netframework4.8\A2v10.Request.dll $(SolutionDir)\bin-custom /Y
+copy $(SolutionDir)\Shared\A2v10.Request\bin\Release\netframework4.8\A2v10.Request.pdb $(SolutionDir)\bin-custom /Y
+echo *****************************
+</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
