@@ -965,7 +965,12 @@ public class AccountController : IdentityController, IControllerTenant, IControl
             {
                 case SignInStatus.Success:
                     status = "Success";
-					break;
+
+                    var userID = await SignInManager.GetVerifiedUserIdAsync();
+                    var user = await UserManager.FindByIdAsync(userID);
+                    await CallHook("loginSuccess", user);
+
+                    break;
                 case SignInStatus.LockedOut:
                     status = "Lockout";
 					break;
